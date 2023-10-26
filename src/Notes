@@ -1,0 +1,9 @@
+19/10/2023
+----------------
+Created models
+Created Required DTOs
+Created Controller
+Created Service layer
+implemented RestTemplate
+Invoked call to 3rd party API usin RestTemplate to get data
+Returned response from controller
