@@ -1,6 +1,7 @@
 package com.shipkart.EcomProductService.service;
 
 import com.shipkart.EcomProductService.dto.ProductListResponseDTO;
+import com.shipkart.EcomProductService.dto.ProductRequestDTO;
 import com.shipkart.EcomProductService.dto.ProductResponseDTO;
 import com.shipkart.EcomProductService.model.Product;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -23,29 +24,42 @@ public class FakeStoreproductServiceImpl implements ProductService{
     public ProductListResponseDTO getAllProducts() {
         String getAllProductsURL = "https://fakestoreapi.com/products";
         RestTemplate restTemplate = restTemplateBuilder.build();
-//        ResponseEntity<ProductListResponseDTO> productResponse =
-//                        restTemplate.getForEntity(getAllProductsURL, ProductListResponseDTO.class);
-//        return productResponse.getBody();
-        return null;
+        ResponseEntity<ProductResponseDTO[]> productResponseArray =
+                        restTemplate.getForEntity(getAllProductsURL, ProductResponseDTO[].class);
+
+        ProductListResponseDTO responseDTO = new ProductListResponseDTO();
+        for(ProductResponseDTO productResponse : productResponseArray.getBody()){
+            responseDTO.getProductResponseDTOList().add(productResponse);
+        }
+        return responseDTO;
     }
 
     @Override
     public ProductResponseDTO getProductByID(int id) {
-        String getAllProductsURL = "https://fakestoreapi.com/products/github"+id;
+        String getProductURL = "https://fakestoreapi.com/products/"+id;
         RestTemplate restTemplate = restTemplateBuilder.build();
         ResponseEntity<ProductResponseDTO> productResponse =
-                        restTemplate.getForEntity(getAllProductsURL, ProductResponseDTO.class);
+                        restTemplate.getForEntity(getProductURL, ProductResponseDTO.class);
         return productResponse.getBody();
     }
 
     @Override
-    public Product createProduct(Product product) {
-        return null;
+    public ProductResponseDTO createProduct(ProductRequestDTO productRequestDTO) {
+        String createProductURL = "https://fakestoreapi.com/products/";
+        RestTemplate restTemplate = restTemplateBuilder.build();
+        ResponseEntity<ProductResponseDTO> productResponseDTOResponseEntity =
+                restTemplate.postForEntity(createProductURL, productRequestDTO, ProductResponseDTO.class);
+        return productResponseDTOResponseEntity.getBody();
     }
 
     @Override
-    public Product deleteProduct(int id) {
-        return null;
+    public ProductResponseDTO deleteProduct(int id) {
+        String deleteProductURL = "https://fakestoreapi.com/products/"+id;
+        RestTemplate restTemplate = restTemplateBuilder.build();
+        ResponseEntity<ProductResponseDTO> productResponse =
+                restTemplate.getForEntity(deleteProductURL, ProductResponseDTO.class);
+        restTemplate.delete(deleteProductURL);
+        return productResponse.getBody();
     }
 
     @Override

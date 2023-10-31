@@ -1,28 +1,31 @@
 package com.shipkart.EcomProductService.controller;
 
 import com.shipkart.EcomProductService.dto.ProductListResponseDTO;
+import com.shipkart.EcomProductService.dto.ProductRequestDTO;
 import com.shipkart.EcomProductService.dto.ProductResponseDTO;
-import com.shipkart.EcomProductService.model.Product;
 import com.shipkart.EcomProductService.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class ProductController {
 
-    @Autowired
-    @Qualifier("fakeStoreProductService")
-    private ProductService productService;
+    //Field injection
+//    @Autowired
+//    @Qualifier("fakeStoreProductService")
+//    private ProductService productService;
 
-    @GetMapping("/products/1")
-    public ResponseEntity getProductThroughID(){
+    private final ProductService productService;
+    @Autowired
+    public ProductController(@Qualifier("fakeStoreProductService") ProductService productService) {
+        this.productService = productService;
+    }
+
+    //Get product of given ID
+    @GetMapping("/products/{id}")
+    public ResponseEntity getProductThroughID(@PathVariable("id") int id){
         /*
         ProductResponseDTO p1 = new ProductResponseDTO();
         p1.setId(1);
@@ -44,7 +47,29 @@ public class ProductController {
 
         return ResponseEntity.ok(productsList);
          */
-        ProductResponseDTO responseDTO = productService.getProductByID(1);
+        ProductResponseDTO responseDTO = productService.getProductByID(id);
         return ResponseEntity.ok(responseDTO);
+    }
+
+    //Get all products
+    @GetMapping("/products")
+    public ResponseEntity getAllProducts(){
+        ProductListResponseDTO responseDTO = productService.getAllProducts();
+        return ResponseEntity.ok(responseDTO);
+    }
+
+    //Create a product
+    @PostMapping("/products")
+    public ResponseEntity createProduct(@RequestBody ProductRequestDTO productRequestDTO){
+        ProductResponseDTO responseDTO = productService.createProduct(productRequestDTO);
+        return ResponseEntity.ok(responseDTO);
+    }
+
+    //Delete a product
+
+    @DeleteMapping("/products/{id}")
+    public ProductResponseDTO deleteProdctById(@PathVariable int id){
+        ProductResponseDTO response = productService.deleteProduct(id);
+        return response;
     }
 }
