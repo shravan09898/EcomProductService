@@ -15,7 +15,7 @@ public class ProductController {
     //Field injection
 //    @Autowired
 //    @Qualifier("fakeStoreProductService")
-//    private ProductService productService;
+//    private ProductService productServiceField;
 
     private final ProductService productService;
     @Autowired
@@ -68,8 +68,15 @@ public class ProductController {
     //Delete a product
 
     @DeleteMapping("/products/{id}")
-    public ProductResponseDTO deleteProdctById(@PathVariable int id){
+    public ResponseEntity deleteProductById(@PathVariable int id){
         ProductResponseDTO response = productService.deleteProduct(id);
-        return response;
+        return ResponseEntity.ok(response);
+    }
+
+
+    @PutMapping("/products/{id}")
+    public ResponseEntity updateProductById(@PathVariable int id, @RequestBody ProductRequestDTO productRequestDTO){
+        ProductResponseDTO response = productService.updateProduct(id,productRequestDTO);
+        return ResponseEntity.ok(response);
     }
 }
