@@ -1,15 +1,19 @@
 package com.shipkart.EcomProductService.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class Product {
-    private int id;
+@Entity(name = "ECOM_PRODUCT")
+public class Product extends BaseModel{
     private String title;
     private double price;
-    private String category;
+
+    @ManyToOne
+    private Category category;
     private String description;
     private String image;
 }

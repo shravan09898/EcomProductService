@@ -1,0 +1,2 @@
+1. @MappedSuperClass -> No table for parent class, but individual for each child class.
+    Child class gets the attributes from parent and creates a column in child table
